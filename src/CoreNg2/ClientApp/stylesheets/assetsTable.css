@@ -1,0 +1,30 @@
+﻿.table-column-text {
+    font-size: 20px;
+    color: rgb(84, 84, 84);
+    padding: 10px;
+    text-align: left;
+    cursor: pointer;
+    width: 80%;
+}
+
+.table-column-icons {
+    font-size: 15px;
+    color: darkred;
+    padding: 10px;
+    text-align: right;
+    cursor: default;
+}
+
+.optionsTable {
+    width: 60%;
+}
+
+.glyphicon {
+    font-size: 17px;
+    color: rgb(170, 170, 170);
+}
+
+.deleteIcon:hover {
+    color: red;
+    cursor: pointer;
+}

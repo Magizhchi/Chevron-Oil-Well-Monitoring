@@ -1,0 +1,32 @@
+﻿<h1>Measurement</h1>
+
+<div>
+    <hr>
+    <h3> Create new Measurement </h3>
+    <br />
+    <label> Enter the Measurement Name : </label> <input [(ngModel)]="newMeasurement.measurementName" placeholder="Name">
+    <label> Enter the Measurement Tag : </label> <input [(ngModel)]="newMeasurement.measurementTagName" placeholder="Tag Name">
+    <br />
+    <label> Measurement Greater than : </label> <input [(ngModel)]="newMeasurement.measurementGreaterThan" placeholder="Minimum">
+    <label> Measurement Greater than Active : </label> <input [(ngModel)]="newMeasurement.measurementGreaterThanActive" placeholder="True/False">
+    <br />
+
+    <br />
+    <button (click)="createMeasurment">Create</button>
+    <hr />
+</div>
+
+<table class="table">
+    <tr>
+        <th>MeasurementName</th>
+        <th>MeasurementTagName</th>
+        <th>MeasurementGreaterThan</th>
+        <th>MeasurementGreaterThanActive</th>
+    </tr>
+    <tr *ngFor="let measurement of measurements">
+        <td>{{measurement.measurementName}}</td>
+        <td>{{measurement.measurementTagName}}</td>
+        <td>{{measurement.measurementGreaterThan}}</td>
+        <td>{{measurement.measurementGreaterThanActive}}</td>
+    </tr>
+</table>

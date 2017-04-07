@@ -1,0 +1,21 @@
+﻿<h1> Well <button *ngIf="!isCreateActive" type="button" (click)="showAdd()" class="btn btn-success">Add new</button></h1>
+
+<div *ngIf="isCreateActive">
+    <hr>
+    <h3> Create new Well </h3>
+    <br />
+    <label> Enter the Well Name : </label> <input [(ngModel)]="newWell.wellName" placeholder="Well Name">
+    <br />
+    <button (click)="createWell()">Create</button>
+    <hr />
+</div>
+
+<table *ngIf="!isCreateActive" class="active table optionsTable table-nonfluid table-hover">
+    <tr *ngFor="let well of wells" >
+        <td (click)="goToMeasurements(well)" class="table-column-text">{{well.wellName}}</td>
+        <td class="table-column-icons">
+            <span class="glyphicon glyphicon-cog"> </span>
+            <span (click)="deleteWell(well)"class="glyphicon glyphicon-trash deleteIcon"> </span>
+        </td>
+    </tr>
+</table>

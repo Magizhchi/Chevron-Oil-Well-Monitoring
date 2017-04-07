@@ -1,0 +1,22 @@
+﻿<h1> Assets <button *ngIf="!isCreateActive" type="button" (click)="showAdd()" class="btn btn-success">Add new</button> </h1>
+
+<div *ngIf="isCreateActive">
+    <hr/>
+    <h3> Create new Asset </h3>
+    <br/>
+    <label> Enter the Asset Name : </label> <input [(ngModel)]="newAsset.assetName"  placeholder="Asset Name">
+    <br/>
+    <button (click)="createAsset()">Create</button>
+    <hr />
+</div>
+
+
+<table *ngIf="!isCreateActive" class="active table optionsTable table-nonfluid table-hover">
+    <tr *ngFor="let asset of assets">
+        <td (click)="goToFields(asset)" class="table-column-text">{{asset.assetName}}</td>
+        <td class="table-column-icons">
+            <span class="glyphicon glyphicon-cog"> </span>
+            <span (click)="deleteAsset(asset)" class="glyphicon glyphicon-trash deleteIcon"> </span>
+        </td>
+    </tr>
+</table>
