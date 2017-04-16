@@ -16,6 +16,12 @@
     <hr />
 </div>
 
+<div *ngIf="!measurements" class="loading">
+    <object type="image/svg+xml" style="width: 100px" data="./../../images/balls.svg">
+        <label class="label">Loading Data...</label>
+    </object>
+</div>
+
 <table class="table">
     <tr>
         <th>MeasurementName</th>

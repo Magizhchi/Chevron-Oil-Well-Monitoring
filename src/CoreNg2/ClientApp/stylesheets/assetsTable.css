@@ -28,3 +28,7 @@
     color: red;
     cursor: pointer;
 }
+
+.loading {
+    padding-left: 10%
+}

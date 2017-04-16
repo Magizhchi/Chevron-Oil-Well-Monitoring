@@ -10,9 +10,14 @@
     <hr/>
 </div>
 
+<div *ngIf="!fields" class="loading">
+    <object type="image/svg+xml" style="width: 100px" data="./../../images/balls.svg">
+        <label class="label">Loading Data...</label>
+    </object>
+</div>
 
 <table *ngIf="!isCreateActive" class="active table optionsTable table-nonfluid table-hover">
-    <tr *ngFor="let field of fields" >
+    <tr *ngFor="let field of fields">
         <td (click)="goToWells(field)" class="table-column-text">{{field.fieldName}}</td>
         <td class="table-column-icons">
             <span class="glyphicon glyphicon-cog"> </span>
@@ -20,4 +25,3 @@
         </td>
     </tr>
 </table>
-

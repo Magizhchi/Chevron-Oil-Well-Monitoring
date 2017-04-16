@@ -10,6 +10,11 @@
     <hr />
 </div>
 
+<div *ngIf="!assets" class="loading">
+    <object type="image/svg+xml" style="width: 100px" data="./../../images/balls.svg">
+        <label class="label">Loading Data...</label>
+    </object>
+</div>
 
 <table *ngIf="!isCreateActive" class="active table optionsTable table-nonfluid table-hover">
     <tr *ngFor="let asset of assets">

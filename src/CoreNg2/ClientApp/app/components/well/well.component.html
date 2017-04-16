@@ -10,6 +10,12 @@
     <hr />
 </div>
 
+<div *ngIf="!wells" class="loading">
+    <object type="image/svg+xml" style="width: 100px" data="./../../images/balls.svg">
+        <label class="label">Loading Data...</label>
+    </object>
+</div>
+
 <table *ngIf="!isCreateActive" class="active table optionsTable table-nonfluid table-hover">
     <tr *ngFor="let well of wells" >
         <td (click)="goToMeasurements(well)" class="table-column-text">{{well.wellName}}</td>

@@ -1,6 +1,12 @@
 ﻿<h1>Daily reports</h1>
 
-<p *ngIf="!eventsCollection"><em>Loading...</em></p>
+<div *ngIf="!eventsCollection" class="loading">
+    <object type="image/svg+xml" style="width: 100px" data="./../../images/balls.svg">
+        <label class="label">Loading Data...</label>
+    </object>
+</div>
+
+
 <table class='table' *ngIf="eventsCollection">
     <thead>
         <tr>
