@@ -50,6 +50,8 @@ namespace CoreNg2.Models
 
                 entity.Property(e => e.Id).HasColumnName("ID");
 
+                entity.Property(e => e.Description).HasColumnType("varchar(256)");
+
                 entity.Property(e => e.FkWellsId).HasColumnName("FK_WellsID");
 
                 entity.Property(e => e.Name)

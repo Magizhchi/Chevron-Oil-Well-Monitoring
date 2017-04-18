@@ -10,10 +10,11 @@ Component({
 })
 export class MeasurementComponent {
     measurements: IMeasurement[];
-    newMeasurement = new Measurement;
+    newMeasurement = new Measurement();
     tagNames: String[];
     private wellId: number;
     breadCrumb: any;
+    ruleTypes: RuleType[];
 
     constructor(
         private router: Router,
@@ -27,12 +28,19 @@ export class MeasurementComponent {
         this.updateMeasurements();
         this.updateTagNames();
         this.updateBreadCrumb();
+        this.updateRuleTypes();
     }
 
     updateTagNames(): void {
         this.measurementService
             .getTagNames()
             .then(tags => this.tagNames = tags);
+    }
+
+    updateRuleTypes(): void {
+        this.measurementService
+            .getRuleTypes()
+            .then(res => this.ruleTypes = res);
     }
 
     updateBreadCrumb(): void {
@@ -46,32 +54,45 @@ export class MeasurementComponent {
             .getMeasurementsForWellId(this.wellId)
             .then(measurements => this.measurements = measurements);
     }
-    createMeasurment(): void {
-        this.measurementService.addMeasurement(this.newMeasurement.measurementName, this.newMeasurement.measurementTagName, this.newMeasurement.measurementGreaterThan, this.newMeasurement.measurementGreaterThanActive)
-            .then(res => this.updateMeasurements());
-    }
+//    createMeasurment(): void {
+//        this.measurementService.addMeasurement(this.newMeasurement.measurementName, this.newMeasurement.measurementTagName, this.newMeasurement.measurementGreaterThan, this.newMeasurement.measurementGreaterThanActive)
+//            .then(res => this.updateMeasurements());
+//    }
 
     goToMeasurements(well): void {
         this.router.navigate(['/measurement', well.wellId]);
         console.log("called..." + well.wellId);
     }
 
+    addMeasurement(): void {
+        this.newMeasurement.FKWellId = this.wellId;
+        console.log(this.newMeasurement);
+        this.measurementService.addMeasurement(this.newMeasurement)
+            .then(res => res.json());
+    }
+
 }
 
 
 interface IMeasurement {
-    measurementName: string;
-    measurementTagName: string;
-    measurementId: number;
-    measurementGreaterThan: number;
-    measurementFkWellsId: number;
-    measurementGreaterThanActive: boolean;
-
+    MeasurementName: string;
+    MeasurementTagName: string;
+    MeasurementId: number;
+    Value: number;
+    RuleDescription: string;
 }
 
 export class Measurement {
     measurementName: string;
     measurementTagName: string;
-    measurementGreaterThan: number;
-    measurementGreaterThanActive: number;
+    measurementDescription: string;
+    RuleTypeId: number;
+    value: number;
+    FKWellId: number;
+}
+
+export class RuleType {
+    RuleTypeId: number;
+    RuleDescription: string;
+    value: number;
 }

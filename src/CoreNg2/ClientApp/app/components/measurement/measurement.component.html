@@ -13,20 +13,27 @@
     <div id="newMeasurement" style="display: table">
         <div style="display: table-row">
             <label style="display:table-cell">Measurement Name</label>
-            <input type="text"/>
+            <input [(ngModel)]="newMeasurement.measurementName" style="display:table-cell" type="text" placeholder="Name"/>
         </div>
         <div style="display: table-row">
             <label style="display:table-cell">Measurement Description</label>
-            <input type="text" />
+            <input [(ngModel)]="newMeasurement.measurementDescription" style="display:table-cell" type="text" placeholder="Description"/>
         </div>
         <div style="display: table-row">
             <label style="display:table-cell">Tag Name</label>
-            <select>
+            <select [(ngModel)]="newMeasurement.measurementTagName" style="display:table-cell">
                 <option *ngFor="let tag of tagNames">{{tag}}</option>
             </select>
         </div>
+        <div style="display: table-row">
+            <label style="display: table-cell">Rule</label>
+            <select [(ngModel)]="newMeasurement.RuleTypeId" style="display:table-cell">
+                <option *ngFor="let rule of ruleTypes" value="{{rule.RuleTypeId}}">{{rule.RuleDescription}}</option>
+            </select>
+            <input [(ngModel)]="newMeasurement.value" style="display:table-cell" type="number" placeholder="value"/>
+        </div>
     </div>
-    <button (click)="createMeasurment">Create</button>
+    <button (click)="addMeasurement()">Create</button>
     <hr />
 </div>
 
@@ -38,15 +45,15 @@
 
 <table class="table">
     <tr>
-        <th>MeasurementName</th>
-        <th>MeasurementTagName</th>
-        <th>MeasurementGreaterThan</th>
-        <th>MeasurementGreaterThanActive</th>
+        <th>Measurement Name</th>
+        <th>Tag Name</th>
+        <th>Rule Description</th>
+        <th>Value</th>
     </tr>
     <tr *ngFor="let measurement of measurements">
-        <td>{{measurement.measurementName}}</td>
-        <td>{{measurement.measurementTagName}}</td>
-        <td>{{measurement.measurementGreaterThan}}</td>
-        <td>{{measurement.measurementGreaterThanActive}}</td>
+        <td>{{measurement.MeasurementName}}</td>
+        <td>{{measurement.MeasurementTagName}}</td>
+        <td>{{measurement.RuleDescription}}</td>
+        <td>{{measurement.Value}}</td>
     </tr>
 </table>

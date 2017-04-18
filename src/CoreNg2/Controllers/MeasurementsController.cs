@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using CoreNg2.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -20,15 +21,13 @@ namespace CoreNg2.Controllers
             using (var context = GetContext())
             {
                 var allMeasurements = from measurement in context.Measurements
-                    select new MeasurementObject
-                    {
-                        MeasurementId = measurement.Id,
-                        MeasurementName = measurement.Name,
-                        MeasurementTagName = measurement.TagName,
-                        MeasurementGreaterThan = measurement.GreaterThan,
-                        MeasurementGreaterThanActive = measurement.GreaterThanActive,
-                        MeasurementFkWellsId = measurement.FkWellsId
-                    };
+                                        select new MeasurementObject
+                                        {
+                                            MeasurementId = measurement.Id,
+                                            MeasurementName = measurement.Name,
+                                            MeasurementTagName = measurement.TagName,
+                                            MeasurementFkWellsId = measurement.FkWellsId,
+                                        };
 
                 return allMeasurements.ToList();
             }
@@ -57,29 +56,44 @@ namespace CoreNg2.Controllers
             }
         }
 
+        [HttpGet("RuleTypes")]
+        public string GetRuleTypes()
+        {
+            using (var context = GetContext())
+            {
+                var result = from ruleType in context.RuleType
+                             select ruleType;
+
+                return result.ToJson();
+            }
+            
+        }
+
         [HttpGet("{id}", Name = "getMeasurementsFromWell")]
-        public List<MeasurementObject> GetMeasurementsForWell(int id)
+        public string GetMeasurementsForWell(int id)
         {
             using (var context = GetContext())
             {
                 var resultMeasurements = from measurement in context.Measurements
-                    where measurement.FkWellsId == id
-                    select new MeasurementObject
-                    {
-                        MeasurementId = measurement.Id,
-                        MeasurementName = measurement.Name,
-                        MeasurementTagName = measurement.TagName,
-                        MeasurementGreaterThan = measurement.GreaterThan,
-                        MeasurementGreaterThanActive = measurement.GreaterThanActive,
-                        MeasurementFkWellsId = measurement.FkWellsId
-                    };
+                                         join rule in context.Rules on measurement.Id equals rule.FkMeasurementsId
+                                         join ruleType in context.RuleType on rule.FkRuleTypeId equals ruleType.RuleTypeId
+                                         where measurement.FkWellsId == id
+                                        select new
+                                        {
+                                            MeasurementId = measurement.Id,
+                                            MeasurementName = measurement.Name,
+                                            MeasurementTagName = measurement.TagName,
+                                            MeasurementFkWellsId = measurement.FkWellsId,
+                                            rule.Value,
+                                            ruleType.RuleDescription
+                                        };
 
-                return resultMeasurements.ToList();
+                return resultMeasurements.ToJson();
             }
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] Measurements item)
+        public IActionResult Create([FromBody] MeasurementImporter item)
         {
             using (var context = GetContext())
             {
@@ -87,10 +101,29 @@ namespace CoreNg2.Controllers
                 {
                     return BadRequest();
                 }
-                context.Measurements.Add(item);
+
+                Measurements measurementItem = new Measurements();
+                measurementItem.Name = item.MeasurementName;
+                measurementItem.TagName = item.MeasurementTagName;
+                measurementItem.FkWellsId = item.FkWellId;
+                measurementItem.Description = item.MeasurementDescription;
+
+
+                context.Measurements.Add(measurementItem);
                 context.SaveChanges();
+
+                Rules rule = new Rules();
+                rule.FkMeasurementsId = measurementItem.Id;
+                rule.FkRuleTypeId = item.RuleTypeId;
+                rule.Value = item.Value;
+                rule.IsActive = true;
+
+                context.Rules.Add(rule);
+                context.SaveChanges();
+
+                return CreatedAtRoute("getMeasurementsFromWell", new { id = measurementItem.FkWellsId }, item);
+
             }
-            return CreatedAtRoute("getMeasurementsFromWell", new {id = item.FkWellsId}, item);
         }
 
         [HttpPut("{id}")]
@@ -103,8 +136,6 @@ namespace CoreNg2.Controllers
                     select measurement).First();
                 measurementItem.Name = item.Name;
                 measurementItem.FkWellsId = item.FkWellsId;
-                measurementItem.GreaterThan = item.GreaterThan;
-                measurementItem.GreaterThanActive = item.GreaterThanActive;
 
                 context.Measurements.Update(measurementItem);
                 context.SaveChanges();
@@ -138,5 +169,16 @@ namespace CoreNg2.Controllers
         public int MeasurementGreaterThan { get; set; }
         public bool MeasurementGreaterThanActive { get; set; }
         public int MeasurementFkWellsId { get; set; }
+    }
+
+    public class MeasurementImporter
+    {
+        public string MeasurementName { get; set; }
+        public string MeasurementTagName { get; set; }
+        public string MeasurementDescription { get; set; }
+        public int RuleTypeId { get; set; }
+        public int Value { get; set; }
+        public int FkWellId { get; set; }
+
     }
 }

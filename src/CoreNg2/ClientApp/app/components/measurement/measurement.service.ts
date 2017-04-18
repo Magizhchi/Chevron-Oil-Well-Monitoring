@@ -3,6 +3,8 @@ import { Http } from "@angular/http";
 
 import "rxjs/add/operator/toPromise";
 
+import Httpheaders = require("../../configuration/http.headers");
+
 @Injectable()
 export class MeasurementService {
 
@@ -11,10 +13,15 @@ export class MeasurementService {
 
     constructor(private http: Http) { }
 
-    addMeasurement(measurementName, measurementTagName, measurementGreaterThan, measurementGreaterThanAcitive): Promise<any> {
-        console.log(measurementTagName + " : " + measurementName);
-        //need to add database connection codes here
-        return measurementTagName;
+    addMeasurement(measurement): Promise<any> {
+        return this.http
+            .post(this.getMeasurementsUrl,
+            JSON.stringify(measurement),
+            { headers: Httpheaders.HttpHeaders.jsonPost })
+            .toPromise()
+            .then(res => res.json())
+            .catch(this.handleError);
+        
     }
 
     getMeasurementsForWellId(wellId: number): Promise<any[]> {
@@ -33,6 +40,13 @@ export class MeasurementService {
 
     getBreadCrumbData(wellId): Promise<any> {
         return this.http.get(this.getMeasurementsUrl + "breadcrumb/" + wellId)
+            .toPromise()
+            .then(response => response.json())
+            .catch(this.handleError);
+    }
+
+    getRuleTypes(): Promise<any> {
+        return this.http.get(this.getMeasurementsUrl + "ruletypes")
             .toPromise()
             .then(response => response.json())
             .catch(this.handleError);

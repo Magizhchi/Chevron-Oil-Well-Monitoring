@@ -19,20 +19,20 @@ namespace CoreNg2.Controllers
              return _dataSimulatorContext.CurrentValues.ToList();
         }
 
-//        [HttpGet("rule/{id}", Name = "filterMeasurements")]
-//        public List<EventObject> FilterMeasurements()
-//        {
-//                var allAssets = from evt in _dataSimulatorContext.History
-//                                //where evt.Value > 100 TODO: implement rule filter
-//                                select new EventObject()
-//                                {
-//                                    Tag = evt.Tag,
-//                                    Time = evt.Time,
-//                                    Value = evt.Value
-//                                };
-//                return allAssets.ToList();
-//            
-//        }
+        //[HttpGet("rule/{id}", Name = "filterMeasurements")]
+        //public List<EventObject> FilterMeasurements()
+        //{
+        //        var allAssets = from evt in _dataSimulatorContext.History
+        //                        //where evt.Value > 100 TODO: implement rule filter
+        //                        select new EventObject()
+        //                        {
+        //                            Tag = evt.Tag,
+        //                            Time = evt.Time,
+        //                            Value = evt.Value
+        //                        };
+        //        return allAssets.ToList();
+            
+        //}
     }
 
     public class EventObject

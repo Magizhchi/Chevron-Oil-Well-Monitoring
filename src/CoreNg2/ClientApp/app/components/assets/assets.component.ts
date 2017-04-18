@@ -11,7 +11,8 @@ import { AssetsService } from "./assets.service";
 export class AssetsComponent implements OnInit {
     assets: Asset[];
     newAsset = new Asset();
-    isCreateActive: boolean = false;
+    deleteAssetObj = new Asset();
+    
 
     constructor(
         private assetsService: AssetsService,
@@ -30,24 +31,19 @@ export class AssetsComponent implements OnInit {
 
     createAsset(): void {
         this.assetsService.addAsset(this.newAsset.assetName)
-            .then(res => { this.updateAllFields(); this.hideAdd(); });
+            .then(res => { this.updateAllFields(); });
     }
 
     goToFields(asset): void {
         this.router.navigate(["/field", asset.assetId]);
     }
 
-    showAdd(): void {
-        this.isCreateActive = true;
+    confirmDelete(asset): void {
+        this.deleteAssetObj = asset;
     }
-
-    hideAdd(): void {
-        this.isCreateActive = false;
-    }
-
-    deleteAsset(asset): void {
-        this.assetsService.deleteAsset(asset.assetId)
-            .then(res => this.updateAllFields());
+    deleteAsset(): void {
+        this.assetsService.deleteAsset(this.deleteAssetObj.assetId)
+                .then(res => this.updateAllFields());
     }
 }
 

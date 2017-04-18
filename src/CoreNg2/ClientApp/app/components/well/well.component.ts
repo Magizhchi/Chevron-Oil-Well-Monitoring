@@ -10,7 +10,8 @@ Component({
 })
 export class WellComponent {
     wells: Well[];
-    newWell= new Well();
+    newWell = new Well();
+    deleteWellObj = new Well();
     private fieldId: number;
     isCreateActive: boolean = false;
     breadCrumb: any;
@@ -56,8 +57,12 @@ export class WellComponent {
         this.isCreateActive = false;
     }
 
-    deleteWell(well): void {
-        this.wellService.deleteWell(well.wellId)
+    confirmDelete(well): void {
+        this.deleteWellObj = well;
+    }
+
+    deleteWell(): void {
+        this.wellService.deleteWell(this.deleteWellObj.wellId)
             .then(res => this.updateWells());
     }
 

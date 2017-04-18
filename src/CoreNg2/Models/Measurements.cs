@@ -12,10 +12,9 @@ namespace CoreNg2.Models
 
         public string Name { get; set; }
         public int FkWellsId { get; set; }
-        public int GreaterThan { get; set; }
-        public bool GreaterThanActive { get; set; }
         public int Id { get; set; }
         public string TagName { get; set; }
+        public string Description { get; set; }
 
         public virtual ICollection<Rules> Rules { get; set; }
         public virtual Wells FkWells { get; set; }

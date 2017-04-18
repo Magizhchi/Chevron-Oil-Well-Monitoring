@@ -11,8 +11,8 @@ import { FieldService } from "./field.service";
 export class FieldComponent implements OnInit {
     fields: Field[];
     newField = new Field();
+    deleteFieldObj = new Field();
     private assetId: number;
-    isCreateActive: boolean = false;
     breadCrumb: any;
 
     constructor(
@@ -45,23 +45,19 @@ export class FieldComponent implements OnInit {
 
     createField(): void {
         this.fieldService.addField(this.newField.fieldName, this.assetId)
-                .then(res => { this.updateFields(); this.hideAdd(); });
+                .then(res => { this.updateFields();});
     }
     
     goToWells(field): void {
         this.router.navigate(['/well', field.fieldId]);
     }
 
-    showAdd(): void {
-        this.isCreateActive = true;
+    confirmDelete(field): void {
+        this.deleteFieldObj = field;
     }
 
-    hideAdd(): void {
-        this.isCreateActive = false;
-    }
-
-    deleteField(field): void {
-        this.fieldService.deleteField(field.fieldId)
+    deleteField(): void {
+        this.fieldService.deleteField(this.deleteFieldObj.fieldId)
             .then(res => this.updateFields());
     }
 }

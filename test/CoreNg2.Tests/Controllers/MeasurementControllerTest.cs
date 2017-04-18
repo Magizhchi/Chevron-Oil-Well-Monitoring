@@ -52,10 +52,10 @@ namespace CoreNg2.Tests.Controllers
         public void CreateMeasurementTestApi()
         {
             var testController = new MeasurementsControllerMock();
-            var test = new Measurements()
+            var test = new MeasurementImporter()
             {
-                Id = 2,
-                FkWellsId = 2
+                RuleTypeId = 2,
+                FkWellId = 2
             };
 
             var result = testController.Create(test);
