@@ -10,8 +10,10 @@ Component({
 })
 export class MeasurementComponent {
     measurements: IMeasurement[];
-    newMeasurement= new Measurement;
+    newMeasurement = new Measurement;
+    tagNames: String[];
     private wellId: number;
+    breadCrumb: any;
 
     constructor(
         private router: Router,
@@ -23,6 +25,20 @@ export class MeasurementComponent {
         this.route.params
             .forEach((params: Params) => this.wellId = params["id"]);
         this.updateMeasurements();
+        this.updateTagNames();
+        this.updateBreadCrumb();
+    }
+
+    updateTagNames(): void {
+        this.measurementService
+            .getTagNames()
+            .then(tags => this.tagNames = tags);
+    }
+
+    updateBreadCrumb(): void {
+        this.measurementService
+            .getBreadCrumbData(this.wellId)
+            .then(data => this.breadCrumb = data[0]);
     }
 
     updateMeasurements(): void {

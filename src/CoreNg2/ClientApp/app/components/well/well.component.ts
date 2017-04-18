@@ -13,6 +13,7 @@ export class WellComponent {
     newWell= new Well();
     private fieldId: number;
     isCreateActive: boolean = false;
+    breadCrumb: any;
 
     constructor(
         private router: Router,
@@ -24,6 +25,13 @@ export class WellComponent {
         this.route.params
                    .forEach((params: Params) => this.fieldId = params["id"]);
         this.updateWells();
+        this.updateBreadCrumb();
+    }
+
+    updateBreadCrumb(): void {
+        this.wellService
+            .getBreadCrumbData(this.fieldId)
+            .then(data => this.breadCrumb = data[0]);
     }
 
     updateWells(): void {

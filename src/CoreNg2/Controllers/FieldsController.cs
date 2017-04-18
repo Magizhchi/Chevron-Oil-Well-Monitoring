@@ -2,6 +2,7 @@
 using System.Linq;
 using CoreNg2.Models;
 using Microsoft.AspNetCore.Mvc;
+using NuGet.Protocol.Core.v3;
 
 namespace CoreNg2.Controllers
 {
@@ -45,6 +46,23 @@ namespace CoreNg2.Controllers
                     };
 
                 return resultFields.ToList();
+            }
+        }
+
+        [HttpGet("breadcrumb/{id}", Name = "getBreadCrumbForFields")]
+        public string GetBreadCrumb(int id)
+        {
+            using (var context = GetContext())
+            {
+                var result = from asset in context.Assets
+                            where asset.Id == id
+                            select new
+                            {
+                                AssetName = asset.Name,
+                                AssetId = asset.Id,
+                            };
+
+                return result.ToJson();
             }
         }
 

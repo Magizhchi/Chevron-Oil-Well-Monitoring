@@ -1,4 +1,11 @@
-﻿<h1> Well <button *ngIf="!isCreateActive" type="button" (click)="showAdd()" class="btn btn-success">Add new</button></h1>
+﻿<h1 *ngIf="breadCrumb">
+    <span>Assets</span> <label> >></label>
+    <span>{{breadCrumb.AssetName}}</span> <label> >></label>
+    <span>{{breadCrumb.FieldName}}</span>
+    <button *ngIf="!isCreateActive" type="button" (click)="showAdd()" class="btn btn-success">Add new</button>
+</h1>
+
+<hr/>
 
 <div *ngIf="isCreateActive">
     <hr>

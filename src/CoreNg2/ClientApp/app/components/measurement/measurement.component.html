@@ -1,17 +1,31 @@
-﻿<h1>Measurement</h1>
+﻿<h1 *ngIf="breadCrumb">
+    <span>Assets</span> <label> >></label>
+    <span>{{breadCrumb.AssetName}}</span> <label> >></label>
+    <span>{{breadCrumb.FieldName}}</span> <label> >></label>
+    <span>{{breadCrumb.WellName}}</span>
+    <button *ngIf="!isCreateActive" type="button" (click)="showAdd()" class="btn btn-success">Add new</button>
+</h1>
 
 <div>
     <hr>
     <h3> Create new Measurement </h3>
     <br />
-    <label> Enter the Measurement Name : </label> <input [(ngModel)]="newMeasurement.measurementName" placeholder="Name">
-    <label> Enter the Measurement Tag : </label> <input [(ngModel)]="newMeasurement.measurementTagName" placeholder="Tag Name">
-    <br />
-    <label> Measurement Greater than : </label> <input [(ngModel)]="newMeasurement.measurementGreaterThan" placeholder="Minimum">
-    <label> Measurement Greater than Active : </label> <input [(ngModel)]="newMeasurement.measurementGreaterThanActive" placeholder="True/False">
-    <br />
-
-    <br />
+    <div id="newMeasurement" style="display: table">
+        <div style="display: table-row">
+            <label style="display:table-cell">Measurement Name</label>
+            <input type="text"/>
+        </div>
+        <div style="display: table-row">
+            <label style="display:table-cell">Measurement Description</label>
+            <input type="text" />
+        </div>
+        <div style="display: table-row">
+            <label style="display:table-cell">Tag Name</label>
+            <select>
+                <option *ngFor="let tag of tagNames">{{tag}}</option>
+            </select>
+        </div>
+    </div>
     <button (click)="createMeasurment">Create</button>
     <hr />
 </div>

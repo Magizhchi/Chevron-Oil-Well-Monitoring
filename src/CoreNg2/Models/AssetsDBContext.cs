@@ -68,6 +68,55 @@ namespace CoreNg2.Models
                     .HasConstraintName("FK_Measurements_ToWells");
             });
 
+            modelBuilder.Entity<RuleType>(entity =>
+            {
+                entity.Property(e => e.RuleTypeId)
+                    .HasColumnName("RuleTypeID")
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.RuleDescription)
+                    .IsRequired()
+                    .HasColumnType("varchar(256)");
+            });
+
+            modelBuilder.Entity<Rules>(entity =>
+            {
+                entity.Property(e => e.Id).HasColumnName("ID");
+
+                entity.Property(e => e.FkMeasurementsId).HasColumnName("FK_MeasurementsID");
+
+                entity.Property(e => e.FkRuleTypeId).HasColumnName("FK_RuleTypeId");
+
+                entity.Property(e => e.IsActive).HasColumnName("isActive");
+
+                entity.Property(e => e.Value).HasDefaultValueSql("0.0");
+
+                entity.HasOne(d => d.FkMeasurements)
+                    .WithMany(p => p.Rules)
+                    .HasForeignKey(d => d.FkMeasurementsId)
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .HasConstraintName("FK_Rules_ToMeasurements");
+            });
+
+            modelBuilder.Entity<WEvents>(entity =>
+            {
+                entity.ToTable("W_Events");
+
+                entity.Property(e => e.Id).HasColumnName("ID");
+
+                entity.Property(e => e.EndTime).HasColumnType("datetime");
+
+                entity.Property(e => e.RuleId).HasColumnName("RuleID");
+
+                entity.Property(e => e.StartTime).HasColumnType("datetime");
+
+                entity.HasOne(d => d.Rule)
+                    .WithMany(p => p.WEvents)
+                    .HasForeignKey(d => d.RuleId)
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .HasConstraintName("FK_W_Events_ToRules");
+            });
+
             modelBuilder.Entity<Wells>(entity =>
             {
                 entity.HasIndex(e => e.FkFieldsId)
@@ -92,6 +141,11 @@ namespace CoreNg2.Models
         public virtual DbSet<Assets> Assets { get; set; }
         public virtual DbSet<Fields> Fields { get; set; }
         public virtual DbSet<Measurements> Measurements { get; set; }
+        public virtual DbSet<RuleType> RuleType { get; set; }
+        public virtual DbSet<Rules> Rules { get; set; }
+        public virtual DbSet<WEvents> WEvents { get; set; }
         public virtual DbSet<Wells> Wells { get; set; }
+
+        // Unable to generate entity type for table 'dbo.history'. Please see the warning messages.
     }
 }

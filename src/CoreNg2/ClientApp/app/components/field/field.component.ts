@@ -13,6 +13,7 @@ export class FieldComponent implements OnInit {
     newField = new Field();
     private assetId: number;
     isCreateActive: boolean = false;
+    breadCrumb: any;
 
     constructor(
         private router: Router,
@@ -24,6 +25,16 @@ export class FieldComponent implements OnInit {
         this.route.params
                    .forEach((params: Params) => this.assetId = params['id']);
         this.updateFields();
+        this.updateBreadCrumb();
+    }
+
+    updateBreadCrumb(): void {
+        this.fieldService
+            .getBreadCrumbData(this.assetId)
+            .then(data => {
+                this.breadCrumb = data[0];
+                console.log(this.breadCrumb);
+            });
     }
 
     updateFields(): void {
@@ -60,3 +71,4 @@ export class Field {
     fieldId: number;
     fieldFkAssetId: number;
 }
+

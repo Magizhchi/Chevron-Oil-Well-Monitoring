@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using CoreNg2.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Razor.Compilation.TagHelpers;
+using NuGet.Protocol.Core.v3;
 
 namespace CoreNg2.Controllers
 {
@@ -32,6 +31,29 @@ namespace CoreNg2.Controllers
                     };
 
                 return allMeasurements.ToList();
+            }
+        }
+
+        [HttpGet("breadcrumb/{id}", Name = "getBreadCrumbForMeasurement")]
+        public string GetBreadCrumb(int id)
+        {
+            using (var context = GetContext())
+            {
+                var result = from asset in context.Assets
+                             join field in context.Fields on asset.Id equals field.FkAssetId
+                             join well in context.Wells on field.Id equals well.FkFieldsId
+                             where well.Id == id
+                             select new
+                             {
+                                 AssetName = asset.Name,
+                                 AssetId = asset.Id,
+                                 FieldName = field.Name,
+                                 FieldId = field.Id,
+                                 WellName = well.Name,
+                                 WellId = well.Id
+                             };
+
+                return result.ToJson();
             }
         }
 

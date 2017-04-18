@@ -8,9 +8,10 @@ using CoreNg2.Models;
 namespace CoreNg2.Migrations
 {
     [DbContext(typeof(AssetsDBContext))]
-    partial class AssetsDBContextModelSnapshot : ModelSnapshot
+    [Migration("20170418054001_RuleTable")]
+    partial class RuleTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.0.1")
