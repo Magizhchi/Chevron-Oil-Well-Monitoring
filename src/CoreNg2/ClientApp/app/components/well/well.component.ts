@@ -1,4 +1,4 @@
-﻿import { Component } from "@angular/core";
+﻿import { Component,OnInit } from "@angular/core";
 import { ActivatedRoute, Params, Router } from "@angular/router";
 import { WellService } from "./well.service";
 
@@ -8,7 +8,7 @@ Component({
     template: require("./well.component.html"),
     styles: [require("./../../../stylesheets/assetsTable.css")]   
 })
-export class WellComponent {
+export class WellComponent implements OnInit {
     wells: Well[];
     newWell = new Well();
     deleteWellObj = new Well();

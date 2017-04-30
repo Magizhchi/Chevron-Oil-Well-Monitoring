@@ -9,17 +9,20 @@
 
 <table class='table' *ngIf="eventsCollection">
     <thead>
-        <tr>
-            <th>Tag</th>
-            <th>Time</th>
-            <th>Value</th>
-        </tr>
+    <tr>
+        <th>Tag</th>
+        <th>StartTime</th>
+        <th>EndTime</th>
+        <th>Max Value</th>
+    </tr>
     </thead>
     <tbody>
-        <tr *ngFor="let event of eventsCollection">
-            <td>{{ event.tag }}</td>
-            <td>{{ event.time }}</td>
-            <td>{{ event.value }}</td>
-        </tr>
+    <tr *ngFor="let event of eventsCollection" (click)="viewEvent(event)">
+        
+        <td>{{ event.tag }}</td>
+        <td>{{ event.startTime }}</td>
+        <td>{{ event.endTime }}</td>
+        <td>{{ event.maxValue }}</td>
+    </tr>
     </tbody>
 </table>

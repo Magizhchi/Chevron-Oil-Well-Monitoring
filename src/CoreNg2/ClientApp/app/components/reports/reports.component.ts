@@ -1,18 +1,31 @@
-﻿import { Component } from "@angular/core";
+﻿import { Component, OnInit } from "@angular/core";
 import { Http } from "@angular/http";
+import { Router } from "@angular/router";
+
+import { ReportsService } from "./reports.service";
 
 @Component({
     selector: "daily-reports",
     template: require("./reports.component.html"),
     styles: [require("./reports.component.css")]
 })
-export class ReportsComponent {
-    public eventsCollection: EventReport[];
+export class ReportsComponent implements OnInit {
+    public eventsCollection: any[];
+    private reports: any[];
 
-    constructor(http: Http) {
-        http.get("/api/Reports/GetReport").subscribe(result => {
-            this.eventsCollection = result.json();
-        });
+    constructor(
+        private reportsService: ReportsService,
+        private router: Router
+    ) { }
+
+    ngOnInit(): void {
+        this.reportsService
+            .getAllEvents()
+            .then(res => this.eventsCollection = res);
+    }
+
+    viewEvent(event): void {
+        this.router.navigate(['/viewEvent', event.id]);
     }
 }
 
@@ -20,4 +33,7 @@ interface EventReport {
     tag: string;
     time: string;
     value: number;
+    ruleTypeId: number;
+    fkMeasurementsId: number;
+    name: string;
 }

@@ -1,0 +1,41 @@
+﻿<h2>EventViewer</h2>
+
+<table *ngIf="eventDetails" class="table table-hover table-striped">
+    <tr>
+        <td>Asset Name</td>
+        <td>{{eventDetails.assetName}}</td>
+    </tr>
+    <tr>
+        <td>Field Name</td>
+        <td>{{eventDetails.fieldName}}</td>
+    </tr>
+    <tr>
+        <td>Well Name</td>
+        <td>{{eventDetails.wellName}}</td>
+    </tr>
+    <tr>
+        <td>Measurement Name</td>
+        <td>{{eventDetails.measurementName}}</td>
+    </tr>
+    <tr>
+        <td>Measurement Desc</td>
+        <td>{{eventDetails.measurementDesc}}</td>
+    </tr>
+    <tr>
+        <td>tag</td>
+        <td>{{eventDetails.tag}}</td>
+    </tr>
+    <tr>
+        <td>Start Time</td>
+        <td>{{eventDetails.startTime}}</td>
+    </tr>
+    <tr>
+        <td>End Time</td>
+        <td>{{eventDetails.endTime}}</td>
+    </tr>
+    <tr>
+        <td>Max Value</td>
+        <td>{{eventDetails.maxValue}}</td>
+    </tr>
+
+</table>

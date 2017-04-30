@@ -33,6 +33,26 @@ namespace CoreNg2.Controllers
             }
         }
 
+        [HttpGet("recent/{id}")]
+        public dynamic GetRecentEvent(int id)
+        {
+            using (var context = GetContext())
+            {
+                var recentEvent = from measurement in context.Measurements
+                                  join rule in context.Rules on measurement.Id equals rule.FkMeasurementsId
+                                  join evt in context.WEvents on rule.Id equals evt.RuleId
+                                  where measurement.Id == id
+                                  orderby evt.EndTime descending
+                                  select new
+                                  {
+                                      eventID = evt.Id,
+                                      evt.EndTime
+                                  };
+
+                return recentEvent.FirstOrDefault();
+            }
+        }
+
         [HttpGet("breadcrumb/{id}", Name = "getBreadCrumbForMeasurement")]
         public string GetBreadCrumb(int id)
         {

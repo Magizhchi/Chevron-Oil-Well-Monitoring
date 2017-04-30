@@ -38,15 +38,15 @@ namespace CoreNg2.Tests.Controllers
             Assert.IsType<List<MeasurementObject>>(results);
         }
 
-        [Fact]
-        public void GetMeasurementsByWellIdTest()
-        {
-            var testController = new MeasurementsControllerMock();
-            var measurements = testController.GetMeasurementsForWell(1);
+        //[Fact]
+        //public void GetMeasurementsByWellIdTest()
+        //{
+        //    var testController = new MeasurementsControllerMock();
+        //    var measurements = testController.GetMeasurementsForWell(1);
 
-            int numRows = measurements.Count;
-            Assert.Equal(numRows, 1);
-        }
+        //    int numRows = measurements.Count;
+        //    Assert.Equal(numRows, 1);
+        //}
 
         [Fact]
         public void CreateMeasurementTestApi()

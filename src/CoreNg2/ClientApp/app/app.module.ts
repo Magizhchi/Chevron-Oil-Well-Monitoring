@@ -11,12 +11,16 @@ import { TrackerComponent } from "./components/tracker/tracker.component";
 import { AssetsComponent } from "./components/assets/assets.component";
 import { FieldComponent } from "./components/field/field.component";
 import { WellComponent } from "./components/well/well.component";
-import { MeasurementComponent } from "./components/measurement/measurement.component"
+import { MeasurementComponent } from "./components/measurement/measurement.component";
+import { EventViewerComponent } from "./components/eventViewer/eventViewer.component";
 
 import { AssetsService } from "./components/assets/assets.service";
 import { FieldService } from "./components/field/field.service";
 import { WellService } from "./components/well/well.service";
 import { MeasurementService } from "./components/measurement/measurement.service";
+import { ReportsService } from "./components/reports/reports.service";
+import { EventViewerService } from "./components/eventViewer/eventViewer.service";
+
 
 @NgModule({
     bootstrap: [AppComponent],
@@ -29,13 +33,16 @@ import { MeasurementService } from "./components/measurement/measurement.service
         AssetsComponent,
         FieldComponent,
         WellComponent,
-        MeasurementComponent
+        MeasurementComponent,
+        EventViewerComponent
     ],
     providers: [
         AssetsService,
         FieldService,
         WellService,
-        MeasurementService
+        MeasurementService,
+        ReportsService,
+        EventViewerService
     ],
     imports: [
         UniversalModule, // Must be first import. This automatically imports BrowserModule, HttpModule, and JsonpModule too.
@@ -49,6 +56,8 @@ import { MeasurementService } from "./components/measurement/measurement.service
             { path: "field/:id", component: FieldComponent },
             { path: "well/:id", component: WellComponent},
             { path: "measurement/:id", component: MeasurementComponent},
+            { path: "measurement/:id", component: MeasurementComponent },
+            { path: "viewEvent/:id", component:EventViewerComponent},
             { path: "**", redirectTo: "home" }
         ])
     ]

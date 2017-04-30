@@ -46,6 +46,29 @@ namespace CoreNg2.Controllers
             }
         }
 
+        [HttpGet("recent/{id}")]
+        public dynamic GetRecentEvent(int id)
+        {
+            using (var context = GetContext())
+            {
+                var recentEvent = from asset in context.Assets
+                                  join field in context.Fields on asset.Id equals field.FkAssetId
+                                  join well in context.Wells on field.Id equals well.FkFieldsId
+                                  join measurement in context.Measurements on well.Id equals measurement.FkWellsId
+                                  join rule in context.Rules on measurement.Id equals rule.FkMeasurementsId
+                                  join evt in context.WEvents on rule.Id equals evt.RuleId
+                                  where asset.Id == id
+                                  orderby evt.EndTime descending 
+                                  select new
+                                  {
+                                      eventID = evt.Id,
+                                      evt.EndTime
+                                  };
+
+                return recentEvent.FirstOrDefault();
+            }
+        }
+
         [HttpPost]
         public IActionResult Create([FromBody] Assets item)
         {
