@@ -2,6 +2,8 @@
 import { Router } from "@angular/router";
 
 import { AssetsService } from "./assets.service";
+import "rxjs/add/operator/toPromise";
+
 
 @Component({
     selector: "assets",
@@ -10,6 +12,7 @@ import { AssetsService } from "./assets.service";
 })
 export class AssetsComponent implements OnInit {
     assets: Asset[];
+    assetsWithTime: any[];
     newAsset = new Asset();
     deleteAssetObj = new Asset();
     
@@ -26,7 +29,15 @@ export class AssetsComponent implements OnInit {
     updateAllFields(): void {
         this.assetsService
             .getAllAssets()
-            .then(assets => this.assets = assets);
+            .then(assets => {
+                this.assets = assets;
+                this.updateRecentEvent();
+            });
+    }
+
+    updateRecentEvent(): void {
+        Promise.all(this.assets.map(e => this.assetsService.getRecentEvent(e)))
+            .then(values => this.assetsWithTime = values);
     }
 
     createAsset(): void {
@@ -50,4 +61,6 @@ export class AssetsComponent implements OnInit {
 export class Asset {
     assetName: string;
     assetId: number;
+    eventId: number;
+    endTime: number;
 }

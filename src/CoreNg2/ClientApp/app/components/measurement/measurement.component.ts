@@ -1,16 +1,21 @@
-﻿import { Component } from "@angular/core";
+﻿import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Params, Router } from "@angular/router";
 
 import { MeasurementService } from "./measurement.service";
 
+import "rxjs/add/operator/toPromise";
+
 @
 Component({
     selector: "measurements-page",
-    template: require("./measurement.component.html")
-})
+    template: require("./measurement.component.html"),
+    styles: [require("./../../../stylesheets/assetsTable.css")]
+})  
 export class MeasurementComponent {
     measurements: IMeasurement[];
+    measurementsWithTime: any[];
     newMeasurement = new Measurement();
+    deleteMeasurementObj = new Measurement();
     tagNames: String[];
     private wellId: number;
     breadCrumb: any;
@@ -52,7 +57,15 @@ export class MeasurementComponent {
     updateMeasurements(): void {
         this.measurementService
             .getMeasurementsForWellId(this.wellId)
-            .then(measurements => this.measurements = measurements);
+            .then(measurements => {
+                this.measurements = measurements;
+                this.updateRecentEvent();
+            });
+    }
+
+    updateRecentEvent(): void {
+        Promise.all(this.measurements.map(e => this.measurementService.getRecentEvent(e)))
+            .then(values => this.measurementsWithTime = values);
     }
 //    createMeasurment(): void {
 //        this.measurementService.addMeasurement(this.newMeasurement.measurementName, this.newMeasurement.measurementTagName, this.newMeasurement.measurementGreaterThan, this.newMeasurement.measurementGreaterThanActive)
@@ -69,6 +82,16 @@ export class MeasurementComponent {
         console.log(this.newMeasurement);
         this.measurementService.addMeasurement(this.newMeasurement)
             .then(res => res.json());
+        this.updateMeasurements();
+    }
+
+    confirmDelete(measurement): void {
+        this.deleteMeasurementObj = measurement;
+    }
+
+    deleteMeasurement(measurmentObj):void {
+//        this.measurementService.deleteField(this.deleteMeasurementObj.MeasurementId)
+//                               .then(res => this.updateMeasurements());
     }
 
 }
@@ -86,6 +109,7 @@ export class Measurement {
     measurementName: string;
     measurementTagName: string;
     measurementDescription: string;
+    MeasurementId: number;
     RuleTypeId: number;
     value: number;
     FKWellId: number;

@@ -2,13 +2,19 @@
 import { Http } from "@angular/http";
 import { Router } from "@angular/router";
 
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+
 import { ReportsService } from "./reports.service";
+
 
 @Component({
     selector: "daily-reports",
     template: require("./reports.component.html"),
-    styles: [require("./reports.component.css")]
+    styles: [require("./../../../stylesheets/assetsTable.css")]
 })
+    
+
 export class ReportsComponent implements OnInit {
     public eventsCollection: any[];
     private reports: any[];
@@ -27,13 +33,4 @@ export class ReportsComponent implements OnInit {
     viewEvent(event): void {
         this.router.navigate(['/viewEvent', event.id]);
     }
-}
-
-interface EventReport {
-    tag: string;
-    time: string;
-    value: number;
-    ruleTypeId: number;
-    fkMeasurementsId: number;
-    name: string;
 }

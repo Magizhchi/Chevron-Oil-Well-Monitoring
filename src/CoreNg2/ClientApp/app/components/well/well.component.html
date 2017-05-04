@@ -1,73 +1,82 @@
-﻿<h1 *ngIf="breadCrumb">
-    <span>Assets</span> <label> >></label>
-    <span>{{breadCrumb.AssetName}}</span> <label> >></label>
-    <span>{{breadCrumb.FieldName}}</span>
-</h1>
+﻿
 
-<hr/>
+<breadcrumbs *ngIf="breadCrumb" [breadCrumb]="breadCrumb"></breadcrumbs>
+<h2 class="table-column-add" style="font-size: 20px; background-color:dimgray; width:60%;">Wells</h2>
 
-<div *ngIf="!wells" class="loading">
+<div *ngIf="!wellsWithTime||!breadCrumb" class="loading">
     <object type="image/svg+xml" style="width: 100px" data="./../../images/balls.svg">
         <label class="label">Loading Data...</label>
     </object>
 </div>
 
-<table class="active table optionsTable table-nonfluid table-hover">
-    <tr *ngFor="let well of wells" >
-        <td (click)="goToMeasurements(well)" class="table-column-text">{{well.wellName}}</td>
-        <td class="table-column-icons">
-            <span class="glyphicon glyphicon-cog"> </span>
-            <span (click)="confirmDelete(well)" class="glyphicon glyphicon-trash deleteIcon" data-toggle="modal" data-target="#deleteModal"> </span>
-        </td>
-    </tr>
-    <tr>
-        <td class="table-column-text" data-toggle="modal" data-target="#addModal"></td>
-        <td class="table-column-icons">
-            <span class="glyphicon glyphicon-plus addIcon" data-toggle="modal" data-target="#addModal"> </span>
-        </td>
-    </tr>
-</table>
-
-<!-- deleteModal -->
-<div class="modal fade" id="deleteModal" role="dialog">
-    <div class="modal-dialog">
-        <!-- Modal content-->
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Confirm</h4>
-            </div>
-            <div class="modal-body">
-                <p>Do you want to remove this item?</p>
-            </div>
-            <div class="modal-footer">
-                <button (click)="deleteWell()" type="button" class="btn btn-danger" data-dismiss="modal">Remove</button>
-                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-            </div>
-        </div>
-
-    </div>
+<div class="scrollable-table">
+    <table *ngIf="wellsWithTime" class="active table optionsTable table-nonfluid table-hover">
+        <tr>
+            <th class="table-column-add">
+                Name
+            </th>
+            <th class="table-column-add"> Recent Event </th>
+            <th class="table-column-add table-column-add-Icon">
+                <span class="glyphicon glyphicon-plus addIconStyle" data-toggle="modal" data-target="#addModal"></span>
+            </th>
+        </tr>
+        <tr *ngFor="let well of wellsWithTime">
+            <td (click)="goToMeasurements(well)" class="table-column-text">{{well.wellName}}</td>
+            <td *ngIf="well.eventID !== -1" class="table-column-text-small">
+                <a routerLink="/viewEvent/{{well.eventID}}">{{well.endTime | date:'medium'}}</a>
+            </td>
+            <td *ngIf="well.eventID === -1" class="table-column-text-small">
+                No Recent Events found
+            </td>
+            <td class="table-column-icons">
+                <span class="glyphicon glyphicon-cog"> </span>
+                <span (click)="confirmDelete(well)" class="glyphicon glyphicon-trash deleteIcon" data-toggle="modal" data-target="#deleteModal"> </span>
+            </td>
+        </tr>
+    </table>
 </div>
+    
 
-<!-- addModal -->
-<div class="modal fade" id="addModal" role="dialog">
-    <div class="modal-dialog">
-        <!-- Modal content-->
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Create New Well</h4>
+    <!-- deleteModal -->
+    <div class="modal fade" id="deleteModal" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Confirm</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Do you want to remove this item?</p>
+                </div>
+                <div class="modal-footer">
+                    <button (click)="deleteWell()" type="button" class="btn btn-danger" data-dismiss="modal">Remove</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                </div>
             </div>
-            <div class="modal-body">
-                <label>*Well Name : </label> <input [(ngModel)]="newWell.wellName" placeholder="Well Name">
-                <p></p>
-                <p class="foot-note">*Required field</p>
-            </div>
-            <div class="modal-footer">
-                <button (click)="createWell()" type="button" class="btn btn-success" data-dismiss="modal">Add</button>
-                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-            </div>
+
         </div>
-
     </div>
-</div>
+
+    <!-- addModal -->
+    <div class="modal fade" id="addModal" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Create New Well</h4>
+                </div>
+                <div class="modal-body">
+                    <label>*Well Name : </label> <input [(ngModel)]="newWell.wellName" placeholder="Well Name">
+                    <p></p>
+                    <p class="foot-note">*Required field</p>
+                </div>
+                <div class="modal-footer">
+                    <button (click)="createWell()" type="button" class="btn btn-success" data-dismiss="modal">Add</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+
+        </div>
+    </div>

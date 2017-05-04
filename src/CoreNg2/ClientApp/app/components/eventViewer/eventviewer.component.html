@@ -1,41 +1,46 @@
-﻿<h2>EventViewer</h2>
+﻿<h2><span (click)="goBack()" class="glyphicon glyphicon-arrow-left addIconStyle" style="font-size:26px;"></span><span style="padding-left: 10px">Details</span></h2>
 
+
+<chart *ngIf="chartingComplete" [type]="type" [data]="data" [options]="options" style="height: 300px"></chart>
 <table *ngIf="eventDetails" class="table table-hover table-striped">
     <tr>
-        <td>Asset Name</td>
+        <td style="font-weight:bold;">Asset Name:</td>
         <td>{{eventDetails.assetName}}</td>
     </tr>
     <tr>
-        <td>Field Name</td>
+        <td style="font-weight:bold;">Field Name:</td>
         <td>{{eventDetails.fieldName}}</td>
     </tr>
     <tr>
-        <td>Well Name</td>
+        <td style="font-weight:bold;">Well Name:</td>
         <td>{{eventDetails.wellName}}</td>
     </tr>
     <tr>
-        <td>Measurement Name</td>
+        <td style="font-weight:bold;">Measurement Name:</td>
         <td>{{eventDetails.measurementName}}</td>
     </tr>
     <tr>
-        <td>Measurement Desc</td>
+        <td style="font-weight:bold;">Measurement Desc:</td>
         <td>{{eventDetails.measurementDesc}}</td>
     </tr>
     <tr>
-        <td>tag</td>
+        <td style="font-weight:bold;">Rule:</td>
+        <td>{{eventDetails.ruleDescription}} {{eventDetails.ruleValue}}</td>
+    </tr>
+    <tr>
+        <td style="font-weight:bold;">Tag:</td>
         <td>{{eventDetails.tag}}</td>
     </tr>
     <tr>
-        <td>Start Time</td>
-        <td>{{eventDetails.startTime}}</td>
+        <td style="font-weight:bold;">Start Time:</td>
+        <td>{{eventDetails.startTime | date:'medium'}}</td>
     </tr>
     <tr>
-        <td>End Time</td>
-        <td>{{eventDetails.endTime}}</td>
+        <td style="font-weight:bold;">End Time:</td>
+        <td>{{eventDetails.endTime | date:'medium'}}</td>
     </tr>
     <tr>
-        <td>Max Value</td>
+        <td style="font-weight:bold;">Max Value:</td>
         <td>{{eventDetails.maxValue}}</td>
     </tr>
-
 </table>

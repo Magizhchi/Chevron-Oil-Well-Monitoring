@@ -10,7 +10,11 @@ namespace CoreNg2.Controllers
     public class ReportsController : Controller
     {
         readonly DataSimulatorContext _dataSimulatorContext = new DataSimulatorContext();
-        readonly AssetsDBContext _assetsDbContext = new AssetsDBContext();
+
+        public virtual AssetsDBContext GetAssetContext()
+        {
+            return new AssetsDBContext();
+        }
 
         [HttpGet("[action]")]
         public List<CurrentValues> GetReport()
@@ -21,50 +25,42 @@ namespace CoreNg2.Controllers
         [HttpGet("events/")]
         public List<dynamic> GetEvents()
         {
-            var events = from evt in _assetsDbContext.WEvents
-                            select new
-                            {
-                                evt.Id,
-                                evt.RuleId,
-                                evt.Tag,
-                                evt.StartTime,
-                                evt.EndTime,
-                                evt.MaxValue
-                            };
+            using(var context = GetAssetContext())
+            {
+            var events = from evt in context.WEvents
+                         join rule in context.Rules on evt.RuleId equals rule.Id
+                         join measurement in context.Measurements on rule.FkMeasurementsId equals measurement.Id
+                         join well in context.Wells on measurement.FkWellsId equals well.Id
+                         join field in context.Fields on well.FkFieldsId equals field.Id
+                         join asset in context.Assets on field.FkAssetId equals asset.Id
+                         select new
+                         {
+                            evt.Id,
+                            evt.RuleId,
+                            evt.Tag,
+                            evt.StartTime,
+                            evt.EndTime,
+                            evt.MaxValue,
+                            MeasurementName = measurement.Name,
+                            AssetName = asset.Name
+                         };
 
             return events.ToList<dynamic>();
+            }
         }
-
-//        //'id' is measurement ID
-//        [HttpGet("events/{id}")]
-//        public List<dynamic> GetEventsForMeasurement(int id)
-//        {
-//            var events = from evt in _assetsDbContext.WEvents
-//                         join rule in _assetsDbContext.Rules on evt.RuleId equals rule.Id
-//                         join measurement in _assetsDbContext.Measurements on rule.FkMeasurementsId equals measurement.Id
-//                         where measurement.Id == id
-//                         select new
-//                         {
-//                             evt.Id,
-//                             evt.RuleId,
-//                             evt.Tag,
-//                             evt.StartTime,
-//                             evt.EndTime,
-//                             evt.MaxValue
-//                         };
-//
-//            return events.ToList<dynamic>();
-//        }
 
         [HttpGet("events/{id}")]
         public dynamic GetDetailsEvents(int id)
         {
-            var wEvent = from evt in _assetsDbContext.WEvents
-                         join rule in _assetsDbContext.Rules on evt.RuleId equals rule.Id
-                         join measurement in _assetsDbContext.Measurements on rule.FkMeasurementsId equals measurement.Id
-                         join well in _assetsDbContext.Wells on measurement.FkWellsId equals well.Id
-                         join field in _assetsDbContext.Fields on well.FkFieldsId equals field.Id
-                         join asset in _assetsDbContext.Assets on field.FkAssetId equals asset.Id
+            using (var context = GetAssetContext())
+            {
+                var wEvent = from evt in context.WEvents
+                         join rule in context.Rules on evt.RuleId equals rule.Id
+                         join ruletype in context.RuleType on rule.FkRuleTypeId equals ruletype.RuleTypeId
+                         join measurement in context.Measurements on rule.FkMeasurementsId equals measurement.Id
+                         join well in context.Wells on measurement.FkWellsId equals well.Id
+                         join field in context.Fields on well.FkFieldsId equals field.Id
+                         join asset in context.Assets on field.FkAssetId equals asset.Id
                          where evt.Id == id
                          select new
                          {
@@ -74,6 +70,7 @@ namespace CoreNg2.Controllers
                              evt.MaxValue,
                              evt.Tag,
                              RuleValue = rule.Value,
+                             ruletype.RuleDescription,
                              MeasurementName = measurement.Name,
                              MeasurementDesc = measurement.Description,
                              WellName = well.Name,
@@ -81,56 +78,64 @@ namespace CoreNg2.Controllers
                              AssetName = asset.Name
                          };
 
-            return wEvent.FirstOrDefault();
+                return wEvent.FirstOrDefault();
+            }
         }
         public List<dynamic> GetDetailedEvents(int id)
         {
-            var events = from evt in _assetsDbContext.WEvents
-                         join rule in _assetsDbContext.Rules on evt.RuleId equals rule.Id
-                         join measurement in _assetsDbContext.Measurements on rule.FkMeasurementsId equals measurement.Id
-                         where measurement.Id == id
-                         select new
-                         {
-                             evt.Id,
-                             evt.RuleId,
-                             evt.Tag,
-                             evt.StartTime,
-                             evt.EndTime,
-                             evt.MaxValue
-                         };
+            using(var context = GetAssetContext())
+            { 
+                var events = from evt in context.WEvents
+                             join rule in context.Rules on evt.RuleId equals rule.Id
+                             join ruletype in context.RuleType on rule.FkRuleTypeId equals ruletype.RuleTypeId
+                             join measurement in context.Measurements on rule.FkMeasurementsId equals measurement.Id
+                             where measurement.Id == id
+                             select new
+                             {
+                                 evt.Id,
+                                 evt.RuleId,
+                                 evt.Tag,
+                                 evt.StartTime,
+                                 evt.EndTime,
+                                 evt.MaxValue
+                             };
 
-            return events.ToList<dynamic>();
+                return events.ToList<dynamic>();
+            }
         }
-        //event ID
+
         [HttpGet("events/drill/{id}", Name = "DrillDown")]
         public List<dynamic> DrillDownEvent(int id)
         {
-            var eventResult = from evt in _assetsDbContext.WEvents
-                where evt.Id == id
-                select new
-                {
-                    tag = evt.Tag,
-                    time = evt.StartTime
-                };
-
-            var selectedEvent = eventResult.FirstOrDefault();
-
-            if (selectedEvent == null)
+            using(var context = GetAssetContext())
             {
-                return Enumerable.Empty<dynamic>().ToList();
-            }
+                var eventResult = from evt in context.WEvents
+                    where evt.Id == id
+                    select new
+                    {
+                        tag = evt.Tag,
+                        time = evt.StartTime
+                    };
+            
+                var selectedEvent = eventResult.FirstOrDefault();
 
-            var historyValues = from hist in _dataSimulatorContext.History
-                where hist.Tag == selectedEvent.tag
-                && hist.Time >= selectedEvent.time.AddHours(-1) && hist.Time <= selectedEvent.time.AddHours(1)
-                select new
+                if (selectedEvent == null)
                 {
-                    hist.Tag,
-                    hist.Time,
-                    hist.Value
-                };
+                    return Enumerable.Empty<dynamic>().ToList();
+                }
 
-            return historyValues.ToList<dynamic>();
+                var historyValues = from hist in _dataSimulatorContext.History
+                    where hist.Tag == selectedEvent.tag
+                    && hist.Time >= selectedEvent.time.AddHours(-.5) && hist.Time <= selectedEvent.time.AddHours(.5)
+                    select new
+                    {
+                        hist.Tag,
+                        hist.Time,
+                        hist.Value
+                    };
+
+                return historyValues.ToList<dynamic>();
+            }
         }
 
     }

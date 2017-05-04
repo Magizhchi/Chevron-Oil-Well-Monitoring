@@ -1,27 +1,45 @@
-﻿<h1> Assets</h1>
-<hr />
+﻿
 
-<div *ngIf="!assets" class="loading">
+<breadcrumbs [breadCrumb]="{}"></breadcrumbs>
+<h2 class="table-column-add" style="font-size: 20px; background-color:dimgray; width:60%;">Assets</h2>
+
+<div *ngIf="!assetsWithTime" class="loading">
     <object type="image/svg+xml" style="width: 100px" data="./../../images/balls.svg">
         <label class="label">Loading Data...</label>
     </object>
 </div>
 
-<table class="active table optionsTable table-nonfluid table-hover">
-    <tr *ngFor="let asset of assets">
-        <td (click)="goToFields(asset)" class="table-column-text">{{asset.assetName}}</td>
-        <td class="table-column-icons">
-            <span class="glyphicon glyphicon-cog"> </span>
-            <span (click)="confirmDelete(asset)"class="glyphicon glyphicon-trash deleteIcon" data-toggle="modal" data-target="#deleteModal"> </span>
-        </td>
-    </tr>
-    <tr>
-        <td class="table-column-text" data-toggle="modal" data-target="#addModal"></td>
-        <td class="table-column-icons">
-            <span class="glyphicon glyphicon-plus addIcon" data-toggle="modal" data-target="#addModal"> </span>
-        </td>
-    </tr>
-</table>
+<div class="scrollable-table">
+    <table *ngIf="assetsWithTime" class="active table optionsTable table-nonfluid table-hover">
+        <thead>
+            <tr>
+                <th class="table-column-add">
+                    Name
+                </th>
+                <th class="table-column-add"> Recent Event </th>
+                <th class="table-column-add table-column-add-Icon">
+                    <span class="glyphicon glyphicon-plus addIconStyle" data-toggle="modal" data-target="#addModal"></span>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let asset of assetsWithTime">
+                <td (click)="goToFields(asset)" class="table-column-text">{{asset.assetName}}</td>
+                <td *ngIf="asset.eventID !== -1" class="table-column-text-small">
+                    <a routerLink="/viewEvent/{{asset.eventID}}">{{asset.endTime | date:'medium'}}</a>
+                </td>
+                <td *ngIf="asset.eventID === -1" class="table-column-text-small">
+                    No Recent Event Found
+                </td>
+                <td class="table-column-icons">
+                    <span class="glyphicon glyphicon-cog"> </span>
+                    <span (click)="confirmDelete(asset)" class="glyphicon glyphicon-trash deleteIcon" data-toggle="modal" data-target="#deleteModal"> </span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
 
 <!-- deleteModal -->
 <div class="modal fade" id="deleteModal" role="dialog">

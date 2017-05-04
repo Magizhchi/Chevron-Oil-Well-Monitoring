@@ -1,59 +1,115 @@
-﻿<h1 *ngIf="breadCrumb">
-    <span>Assets</span> <label> >></label>
-    <span>{{breadCrumb.AssetName}}</span> <label> >></label>
-    <span>{{breadCrumb.FieldName}}</span> <label> >></label>
-    <span>{{breadCrumb.WellName}}</span>
-    <button *ngIf="!isCreateActive" type="button" (click)="showAdd()" class="btn btn-success">Add new</button>
-</h1>
+﻿
+<breadcrumbs *ngIf="breadCrumb" [breadCrumb]="breadCrumb"></breadcrumbs>
+<h2 class="table-column-add" style="font-size: 20px; background-color:dimgray; width:60%;">Measurements</h2>
 
-<div>
-    <hr>
-    <h3> Create new Measurement </h3>
-    <br />
-    <div id="newMeasurement" style="display: table">
-        <div style="display: table-row">
-            <label style="display:table-cell">Measurement Name</label>
-            <input [(ngModel)]="newMeasurement.measurementName" style="display:table-cell" type="text" placeholder="Name"/>
-        </div>
-        <div style="display: table-row">
-            <label style="display:table-cell">Measurement Description</label>
-            <input [(ngModel)]="newMeasurement.measurementDescription" style="display:table-cell" type="text" placeholder="Description"/>
-        </div>
-        <div style="display: table-row">
-            <label style="display:table-cell">Tag Name</label>
-            <select [(ngModel)]="newMeasurement.measurementTagName" style="display:table-cell">
-                <option *ngFor="let tag of tagNames">{{tag}}</option>
-            </select>
-        </div>
-        <div style="display: table-row">
-            <label style="display: table-cell">Rule</label>
-            <select [(ngModel)]="newMeasurement.RuleTypeId" style="display:table-cell">
-                <option *ngFor="let rule of ruleTypes" value="{{rule.RuleTypeId}}">{{rule.RuleDescription}}</option>
-            </select>
-            <input [(ngModel)]="newMeasurement.value" style="display:table-cell" type="number" placeholder="value"/>
-        </div>
-    </div>
-    <button (click)="addMeasurement()">Create</button>
-    <hr />
-</div>
-
-<div *ngIf="!measurements" class="loading">
+<div *ngIf="!measurementsWithTime||!breadCrumb" class="loading">
     <object type="image/svg+xml" style="width: 100px" data="./../../images/balls.svg">
         <label class="label">Loading Data...</label>
     </object>
 </div>
 
-<table class="table">
-    <tr>
-        <th>Measurement Name</th>
-        <th>Tag Name</th>
-        <th>Rule Description</th>
-        <th>Value</th>
-    </tr>
-    <tr *ngFor="let measurement of measurements">
-        <td>{{measurement.MeasurementName}}</td>
-        <td>{{measurement.MeasurementTagName}}</td>
-        <td>{{measurement.RuleDescription}}</td>
-        <td>{{measurement.Value}}</td>
-    </tr>
-</table>
+    <div *ngIf="measurementsWithTime" class="scrollable-table">
+        <table class="active table optionsTable table-nonfluid table-hover">
+            <thead >
+                <tr>
+                    <th class="table-column-add">
+                        Measurement Name
+                    </th>
+                    <th class="table-column-add">Tag Name</th>
+                    <th class="table-column-add"> Recent Event </th>
+                    <th class="table-column-add">Rule Description</th>
+                    <th class="table-column-add">Value</th>
+                    <th class="table-column-add table-column-add-Icon">
+                        <span class="glyphicon glyphicon-plus addIconStyle" data-toggle="modal" data-target="#addModal"></span>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let measurement of measurementsWithTime">
+                    <td>{{measurement.MeasurementName}}</td>
+                    <td>{{measurement.MeasurementTagName}}</td>
+                    <td *ngIf="measurement.eventID !== -1" class="table-column-text-small">
+                        <a routerLink="/viewEvent/{{measurement.eventID}}">{{measurement.endTime | date:'medium'}}</a>
+                    </td>
+                    <td *ngIf="measurement.eventID === -1" class="table-column-text-small">
+                        No Recent Events found
+                    </td>
+                    <td>{{measurement.RuleDescription}}</td>
+                    <td>{{measurement.Value}}</td>
+                    <td class="table-column-icons">
+                        <span class="glyphicon glyphicon-cog"> </span>
+                        <span (click)="confirmDelete(measurement)" class="glyphicon glyphicon-trash deleteIcon" data-toggle="modal" data-target="#deleteModal"> </span>
+                    </td>
+                </tr>
+            </tbody>
+            <tfoot>
+            </tfoot>
+        </table>
+    </div>
+
+
+    <!-- deleteModal -->
+    <div class="modal fade" id="deleteModal" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Confirm</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Do you want to remove this item?</p>
+                </div>
+                <div class="modal-footer">
+                    <button (click)="deleteMeasurement()" type="button" class="btn btn-danger" data-dismiss="modal">Remove</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- addModal -->
+    <div class="modal fade" id="addModal" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Create New Measurement</h4>
+                </div>
+                <div class="modal-body">
+                    <div>
+                        <label style="display:table-cell">*Measurement Name</label>
+                        <input [(ngModel)]="newMeasurement.measurementName" type="text" placeholder="Name" />
+                    </div>
+                    <p></p>
+                    <div>
+                        <label style="display:table-cell">*Measurement Description</label>
+                        <input [(ngModel)]="newMeasurement.measurementDescription" type="text" placeholder="Description" />
+                    </div>
+                    <p></p>
+                    <div>
+                        <label style="display:table-cell">*Tag Name</label>
+                        <select [(ngModel)]="newMeasurement.measurementTagName">
+                            <option *ngFor="let tag of tagNames">{{tag}}</option>
+                        </select>
+                    </div>
+                    <p></p>
+                    <div>
+                        <label style="display: table-cell">*Rule</label>
+                        <select [(ngModel)]="newMeasurement.RuleTypeId">
+                            <option *ngFor="let rule of ruleTypes" value="{{rule.RuleTypeId}}">{{rule.RuleDescription}}</option>
+                        </select>
+                        <input [(ngModel)]="newMeasurement.value" style="display:table-cell" type="number" placeholder="value" />
+                        <p></p>
+                        <p class="foot-note">*Required field</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button (click)="addMeasurement()" type="button" class="btn btn-success" data-dismiss="modal">Add</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+
+        </div>

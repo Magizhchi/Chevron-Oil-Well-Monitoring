@@ -1,7 +1,7 @@
 USE [DataSimulator]
 GO
 
-/****** Object:  StoredProcedure [dbo].[UpdateEvents]    Script Date: 4/24/2017 9:32:42 PM ******/
+/****** Object:  StoredProcedure [dbo].[UpdateEvents]    Script Date: 5/2/2017 4:52:58 PM ******/
 SET ANSI_NULLS ON
 GO
 
@@ -20,7 +20,7 @@ AS
 BEGIN
 	WITH 
 	event_begin as (
-		select top(390)
+		select
 		nextSample.*,
 		@ruleid as ruleid
 		from history history
@@ -29,7 +29,7 @@ BEGIN
 		where nextSample.value >= @CompareValue and history.Value < @CompareValue
 	),
 	event_end as(
-		select top(390)
+		select
 		nextSample.*,
 		@ruleid as ruleid
 		from history currentSample

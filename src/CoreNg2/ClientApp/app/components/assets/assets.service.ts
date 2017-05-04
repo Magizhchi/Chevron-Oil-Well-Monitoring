@@ -14,9 +14,16 @@ export class AssetsService {
     
     getAllAssets(): Promise<any[]> {
         return this.http.get(this.getAllAssestsUrl)
-                    .toPromise()
-                    .then(response => response.json())
-                    .catch(this.handleError);
+                        .toPromise()
+                        .then(response => response.json())
+                        .catch(this.handleError);
+    }
+
+    getRecentEvent(event: any): Promise<any[]> {
+        return this.http.get(this.getAllAssestsUrl + "/recent/" + event.assetId)
+                        .toPromise()
+                        .then(response => Object.assign(response.json(),event))
+                        .catch(this.handleError);
     }
 
     private handleError(error: any): Promise<any> {
@@ -32,15 +39,6 @@ export class AssetsService {
                 .toPromise()
                 .then(res => res.json())
                 .catch(this.handleError);
-    }
-
-    checkLogin(userName, password): Promise<number> {
-        return this.http
-            .post(this.getAllAssestsUrl,
-            JSON.stringify({ "userName": userName, "password": password }), { headers: HttpHeaders.jsonPost })
-            .toPromise()
-            .then(res => res.json())
-            .catch(this.handleError);
     }
 
     deleteAsset(assetId): Promise<any> {

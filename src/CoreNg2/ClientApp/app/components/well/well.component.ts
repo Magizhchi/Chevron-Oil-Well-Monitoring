@@ -2,6 +2,8 @@
 import { ActivatedRoute, Params, Router } from "@angular/router";
 import { WellService } from "./well.service";
 
+import "rxjs/add/operator/toPromise";
+
 @
 Component({
     selector: "wells-page",
@@ -10,6 +12,7 @@ Component({
 })
 export class WellComponent implements OnInit {
     wells: Well[];
+    wellsWithTime: any[];
     newWell = new Well();
     deleteWellObj = new Well();
     private fieldId: number;
@@ -38,7 +41,15 @@ export class WellComponent implements OnInit {
     updateWells(): void {
         this.wellService
             .getWellsForFieldId(this.fieldId)
-            .then(wells => this.wells = wells);
+            .then(wells => {
+                this.wells = wells;
+                this.updateRecentEvent();
+            });
+    }
+
+    updateRecentEvent(): void {
+        Promise.all(this.wells.map(e => this.wellService.getRecentEvent(e)))
+            .then(values => this.wellsWithTime = values);
     }
     createWell(): void {
         this.wellService.addWell(this.newWell.wellName, this.fieldId)

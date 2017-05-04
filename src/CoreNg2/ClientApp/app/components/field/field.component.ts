@@ -2,6 +2,7 @@
 import { ActivatedRoute, Params, Router } from "@angular/router";
 
 import { FieldService } from "./field.service";
+import "rxjs/add/operator/toPromise";
 
 @Component({
     selector: "field-page",
@@ -10,6 +11,7 @@ import { FieldService } from "./field.service";
 })
 export class FieldComponent implements OnInit {
     fields: Field[];
+    fieldsWithTime: any[];
     newField = new Field();
     deleteFieldObj = new Field();
     private assetId: number;
@@ -33,14 +35,21 @@ export class FieldComponent implements OnInit {
             .getBreadCrumbData(this.assetId)
             .then(data => {
                 this.breadCrumb = data[0];
-                console.log(this.breadCrumb);
             });
     }
 
     updateFields(): void {
         this.fieldService
             .getFieldsForAssetId(this.assetId)
-            .then(fields => this.fields = fields);
+            .then(fields => {
+                this.fields = fields;
+                this.updateRecentEvent();
+            });
+    }
+
+    updateRecentEvent(): void {
+        Promise.all(this.fields.map(e => this.fieldService.getRecentEvent(e)))
+            .then(values => this.fieldsWithTime = values);
     }
 
     createField(): void {

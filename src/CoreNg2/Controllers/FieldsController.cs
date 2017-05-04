@@ -67,7 +67,17 @@ namespace CoreNg2.Controllers
                                       evt.EndTime
                                   };
 
-                return recentEvent.FirstOrDefault();
+                var selectedEvent = recentEvent.FirstOrDefault();
+
+                if (selectedEvent == null)
+                {
+                    return new
+                    {
+                        eventID = -1,
+                    };
+                }
+
+                return selectedEvent;
             }
         }
 

@@ -49,7 +49,17 @@ namespace CoreNg2.Controllers
                                       evt.EndTime
                                   };
 
-                return recentEvent.FirstOrDefault();
+                var selectedEvent = recentEvent.FirstOrDefault();
+
+                if (selectedEvent == null)
+                {
+                    return new
+                    {
+                        eventID = -1,
+                    };
+                }
+
+                return selectedEvent;
             }
         }
 
@@ -186,8 +196,6 @@ namespace CoreNg2.Controllers
         public string MeasurementName { get; set; }
         public string MeasurementTagName { get; set; }
         public int MeasurementId { get; set; }
-        public int MeasurementGreaterThan { get; set; }
-        public bool MeasurementGreaterThanActive { get; set; }
         public int MeasurementFkWellsId { get; set; }
     }
 

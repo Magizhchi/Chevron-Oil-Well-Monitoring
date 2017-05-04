@@ -1,0 +1,16 @@
+﻿<h3 *ngIf="breadCrumb" >
+    <a routerLink="/assets"class="breadcrumbs-style">All Assets</a>
+    <span *ngIf="breadCrumb.AssetName">
+        <label> >> </label> 
+        <a class="breadcrumbs-style" routerLink="/field/{{breadCrumb.AssetId}}">{{breadCrumb.AssetName}}</a>
+    </span> 
+    <span *ngIf="breadCrumb.FieldName">
+        <label> >> </label> 
+        <a class="breadcrumbs-style" routerLink="/well/{{breadCrumb.FieldId}}">{{breadCrumb.FieldName}}</a>
+    </span>
+    <span *ngIf="breadCrumb.WellName">
+        <label> >> </label> 
+        <a class="breadcrumbs-style" routerLink="/measurement/{{breadCrumb.WellId}}">{{breadCrumb.WellName}}</a>
+    </span>
+</h3>
+<hr/>

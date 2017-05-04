@@ -13,13 +13,12 @@ export class FieldService {
 
     addField(fieldName, fkAssetId): Promise<any> {
         console.log(fkAssetId + " : " + fieldName);
-        return this.http
-                    .post(this.getFieldUrl,
-                    JSON.stringify({ "Name": fieldName, "FkAssetId": fkAssetId }),
-                    { headers: Httpheaders.HttpHeaders.jsonPost })
-                    .toPromise()
-                    .then(res => res.json())
-                    .catch(this.handleError);
+        return this.http.post(this.getFieldUrl,
+                              JSON.stringify({ "Name": fieldName, "FkAssetId": fkAssetId }),
+                              { headers: Httpheaders.HttpHeaders.jsonPost })
+                        .toPromise()
+                        .then(res => res.json())
+                        .catch(this.handleError);
     }
     
     getFieldsForAssetId(assetId: number): Promise<any[]> {
@@ -27,6 +26,13 @@ export class FieldService {
                     .toPromise()
                     .then(response => response.json())
                     .catch(this.handleError);
+    }
+
+    getRecentEvent(event: any): Promise<any[]> {
+        return this.http.get(this.getFieldUrl + "/recent/" + event.fieldId)
+            .toPromise()
+            .then(response => Object.assign(response.json(), event))
+            .catch(this.handleError);
     }
 
     deleteField(fieldId): Promise<any> {

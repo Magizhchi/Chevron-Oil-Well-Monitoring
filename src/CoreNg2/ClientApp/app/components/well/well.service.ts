@@ -15,12 +15,12 @@ export class WellService {
 
     addWell(wellName, fkFieldId): Promise<any> {
         return this.http
-                .post(this.getWellUrl,
-                        JSON.stringify({ "Name": wellName, "FkFieldsId": fkFieldId }),
-                        { headers: Httpheaders.HttpHeaders.jsonPost })
-                .toPromise()
-                .then(res => res.json())
-                .catch(this.handleError);
+                   .post(this.getWellUrl,
+                         JSON.stringify({ "Name": wellName, "FkFieldsId": fkFieldId }),
+                         { headers: Httpheaders.HttpHeaders.jsonPost })
+                   .toPromise()
+                   .then(res => res.json())
+                   .catch(this.handleError);
     }
     
     getWellsForFieldId(fieldId: number): Promise<any[]> {
@@ -28,6 +28,13 @@ export class WellService {
                     .toPromise()
                     .then(response => response.json())
                     .catch(this.handleError);
+    }
+
+    getRecentEvent(event: any): Promise<any[]> {
+        return this.http.get(this.getWellUrl + "/recent/" + event.wellId)
+            .toPromise()
+            .then(response => Object.assign(response.json(), event))
+            .catch(this.handleError);
     }
 
     deleteWell(wellId): Promise<any> {

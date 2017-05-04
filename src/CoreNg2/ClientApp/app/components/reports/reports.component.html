@@ -1,4 +1,4 @@
-﻿<h1>Daily reports</h1>
+﻿<h2 class="table-column-add" style="font-size: 20px; background-color:dimgray;" >Daily reports</h2>
 
 <div *ngIf="!eventsCollection" class="loading">
     <object type="image/svg+xml" style="width: 100px" data="./../../images/balls.svg">
@@ -6,10 +6,12 @@
     </object>
 </div>
 
-
-<table class='table' *ngIf="eventsCollection">
+<div class="scrollable-table">
+    <table class="active table table-nonfluid table-hover" *ngIf="eventsCollection">
     <thead>
     <tr>
+        <th>Asset Name</th>
+        <th>Measurement Name</th>
         <th>Tag</th>
         <th>StartTime</th>
         <th>EndTime</th>
@@ -17,12 +19,15 @@
     </tr>
     </thead>
     <tbody>
-    <tr *ngFor="let event of eventsCollection" (click)="viewEvent(event)">
+    <tr  class="report-table-column-text" *ngFor="let event of eventsCollection" (click)="viewEvent(event)">
         
+        <td>{{ event.assetName }}</td>
+        <td>{{ event.measurementName }}</td>
         <td>{{ event.tag }}</td>
-        <td>{{ event.startTime }}</td>
-        <td>{{ event.endTime }}</td>
+        <td>{{ event.startTime | date:'medium'}}</td>
+        <td>{{ event.endTime | date:'medium'}}</td>
         <td>{{ event.maxValue }}</td>
     </tr>
     </tbody>
 </table>
+</div>
